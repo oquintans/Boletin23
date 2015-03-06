@@ -1,6 +1,3 @@
-
-
-
 package boletin23;
 
 /**
@@ -58,7 +55,7 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Libro{" + "nombre=" + nombre + ", autor=" + autor + ", precio=" + precio + ", unidades=" + unidades + '}';
+        return ",nombre=" + nombre + " ,autor=" + autor + " ,precio=" + precio + " ,unidades=" + unidades ;
     }
-               
+
 }

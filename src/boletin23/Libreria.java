@@ -2,6 +2,8 @@ package boletin23;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -22,7 +24,8 @@ public class Libreria {
 
     public void add() {
         try {
-            fich = new PrintWriter(new File(nombF));
+            
+            fich = new PrintWriter (new FileWriter(new File(nombF),true));
             sc = new Scanner(new File(nombF));
             String n = JOptionPane.showInputDialog("Nombre?");
             String a = JOptionPane.showInputDialog("Autor?");
@@ -34,13 +37,11 @@ public class Libreria {
             
             
             //fich.println(n + "." + a + "." + p + "." + u + ",");
-            if (sc.hasNextLine()) {                    
-                fich.println(libro);
-            } else {
-                fich.println(libro);
-            }
+            fich.println(l);
 
         } catch (FileNotFoundException ex) {
+            Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
