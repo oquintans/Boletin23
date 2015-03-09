@@ -16,8 +16,9 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Libreria libro=new Libreria();
-        libro.add();
+        Libreria libro = new Libreria();
+        //libro.add();
+        libro.visualizar();
 
     }
 
