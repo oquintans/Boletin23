@@ -160,11 +160,21 @@ public class Libreria {
 
     public void ordenar() {
         try {
-            fich = new PrintWriter(new File(nombF));
+            sc = new Scanner(new File(nombF)).useDelimiter(delim);
+            fich = new PrintWriter(new FileWriter(new File(nombF), true));
+            while (sc.hasNextLine()) {
+                linea = sc.nextLine();
+                String[] l = linea.split(",");
+                for (int i = 0; i < l.length; i += 4) {
+                    libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
+                }
+            }
+
         } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
+            sc.close();
         }
     }
 
