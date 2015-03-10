@@ -22,15 +22,16 @@ public class Libreria {
     String nombF = "Libreria.txt";
     String delim = ",";
     String linea;
+    ArrayList<Libro> libro;
     int bucle;
 
     public void add() {
 
         try {
+            fich = new PrintWriter(new FileWriter(new File(nombF), true));
+            sc = new Scanner(new File(nombF));
             do {
-                ArrayList<Libro> libro = new ArrayList();
-                fich = new PrintWriter(new FileWriter(new File(nombF), true));
-                sc = new Scanner(new File(nombF));
+                libro = new ArrayList();
                 String n = JOptionPane.showInputDialog("Nombre?");
                 String a = JOptionPane.showInputDialog("Autor?");
                 float p = Float.parseFloat(JOptionPane.showInputDialog("Precio?"));
@@ -46,6 +47,7 @@ public class Libreria {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
+            sc.close();
         }
     }
 
@@ -54,10 +56,11 @@ public class Libreria {
         float precio = 0;
         String n = "";
         try {
+            sc = new Scanner(new File(nombF)).useDelimiter(delim);
             do {
                 int aux = 0;
-                ArrayList<Libro> libro = new ArrayList();
-                sc = new Scanner(new File(nombF)).useDelimiter(delim);
+                libro = new ArrayList();
+
                 while (sc.hasNextLine()) {
                     linea = sc.nextLine();
                     String[] l = linea.split(",");
@@ -82,7 +85,7 @@ public class Libreria {
                 bucle = JOptionPane.showConfirmDialog(null, "Buscar mas?");
             } while (bucle == 0);
 
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             sc.close();
@@ -90,7 +93,7 @@ public class Libreria {
     }
 
     public void visualizar() {
-        ArrayList<Libro> libro = new ArrayList();
+        libro = new ArrayList();
         try {
             sc = new Scanner(new File(nombF)).useDelimiter(delim);
             while (sc.hasNextLine()) {
@@ -103,7 +106,7 @@ public class Libreria {
             for (int j = 0; j < libro.size(); j++) {
                 System.out.println("Libro " + (j + 1) + "---> " + "Nombre: " + libro.get(j).getNombre() + " Autor: " + libro.get(j).getAutor() + " Precio: " + libro.get(j).getPrecio() + "€" + " Cant: " + libro.get(j).getUnidades());
             }
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             sc.close();
@@ -111,19 +114,44 @@ public class Libreria {
     }
 
     public void remove() {
+        libro = new ArrayList();
         try {
-            fich = new PrintWriter(new File(nombF));
-        } catch (FileNotFoundException ex) {
+            int preg = JOptionPane.showConfirmDialog(null, "Seguro que quieres borrar?");
+            if (preg == 0) {
+                sc = new Scanner(new File(nombF)).useDelimiter(delim);
+                fich = new PrintWriter(new FileWriter(new File(nombF), true));
+                while (sc.hasNextLine()) {
+                    linea = sc.nextLine();
+                    String[] l = linea.split(",");
+                    for (int i = 0; i < l.length; i += 4) {
+                        libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
+                    }
+                }
+                sc.close();
+                fich.close();
+                File f = new File(nombF);
+                f.delete();
+                f.createNewFile();
+                fich = new PrintWriter(new FileWriter(new File(nombF), true));
+                for (int i = 0; i < libro.size(); i++) {
+                    if (libro.get(i).getUnidades() != 0) {
+                        fich.println(libro.get(i));
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "Borrado Completado");
+            }
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
+
         }
     }
 
     public void modificar() {
         try {
             fich = new PrintWriter(new File(nombF));
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
@@ -133,7 +161,7 @@ public class Libreria {
     public void ordenar() {
         try {
             fich = new PrintWriter(new File(nombF));
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
@@ -143,10 +171,10 @@ public class Libreria {
     public void buscar() {
         try {
             sc = new Scanner(new File(nombF));
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            fich.close();
+            sc.close();
         }
     }
 }

@@ -40,7 +40,7 @@ public class Main {
                 default:
                     System.exit(0);
             }
-        } while (op != 0 && op != 4);
+        } while (op != 0 && op != 5);
     }
 
 }
