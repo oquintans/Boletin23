@@ -55,7 +55,7 @@ public class Libro {
 
     @Override
     public String toString() {
-        return ",nombre=" + nombre + " ,autor=" + autor + " ,precio=" + precio + " ,unidades=" + unidades ;
+        return nombre + "," + autor + "," + precio + "," + unidades;
     }
 
 }

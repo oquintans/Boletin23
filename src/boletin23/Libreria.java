@@ -20,25 +20,26 @@ public class Libreria {
     PrintWriter fich;
     Scanner sc;
     String nombF = "Libreria.txt";
-    ArrayList<Libro> libro = new ArrayList();
+
+    String delim = ",";
 
     public void add() {
+        int bucle;
         try {
-            
-            fich = new PrintWriter (new FileWriter(new File(nombF),true));
-            sc = new Scanner(new File(nombF));
-            String n = JOptionPane.showInputDialog("Nombre?");
-            String a = JOptionPane.showInputDialog("Autor?");
-            float p = Float.parseFloat(JOptionPane.showInputDialog("Precio?"));
-            int u = Integer.parseInt(JOptionPane.showInputDialog("Unidades"));
+            do {
+                ArrayList<Libro> libro = new ArrayList();
+                fich = new PrintWriter(new FileWriter(new File(nombF), true));
+                sc = new Scanner(new File(nombF));
+                String n = JOptionPane.showInputDialog("Nombre?");
+                String a = JOptionPane.showInputDialog("Autor?");
+                float p = Float.parseFloat(JOptionPane.showInputDialog("Precio?"));
+                int u = Integer.parseInt(JOptionPane.showInputDialog("Unidades"));
 
-            Libro l = new Libro(n, a, p, u);
-            libro.add(l);
-            
-            
-            //fich.println(n + "." + a + "." + p + "." + u + ",");
-            fich.println(l);
-
+                Libro l = new Libro(n, a, p, u);
+                libro.add(l);
+                fich.println(l);
+                bucle = JOptionPane.showConfirmDialog(null, "Añadir mas?");
+            } while (bucle == 0);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -59,12 +60,24 @@ public class Libreria {
     }
 
     public void visualizar() {
+        ArrayList<Libro> libro = new ArrayList();
+        String linea;
         try {
-            sc = new Scanner(new File(nombF));
+            sc = new Scanner(new File(nombF)).useDelimiter(delim);
+            while (sc.hasNextLine()) {
+                linea = sc.nextLine();
+                String[] l = linea.split(",");
+                for (int i = 0; i < l.length; i += 4) {
+                    libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
+                }
+            }
+            for (int j = 0; j < libro.size(); j++) {
+                System.out.println("Libro " + (j + 1) + "---> " + "Nombre: " + libro.get(j).getNombre() + " Autor: " + libro.get(j).getAutor() + " Precio: " + libro.get(j).getPrecio() + "€" + " Cant: " + libro.get(j).getUnidades());
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            fich.close();
+            sc.close();
         }
     }
 
