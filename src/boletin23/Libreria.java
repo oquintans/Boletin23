@@ -1,7 +1,6 @@
 package boletin23;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -94,6 +93,7 @@ public class Libreria {
 
     public void visualizar() {
         libro = new ArrayList();
+        String ac = "";
         try {
             sc = new Scanner(new File(nombF)).useDelimiter(delim);
             while (sc.hasNextLine()) {
@@ -104,8 +104,9 @@ public class Libreria {
                 }
             }
             for (int j = 0; j < libro.size(); j++) {
-                System.out.println("Libro " + (j + 1) + "---> " + "Nombre: " + libro.get(j).getNombre() + " Autor: " + libro.get(j).getAutor() + " Precio: " + libro.get(j).getPrecio() + "€" + " Cant: " + libro.get(j).getUnidades());
+                ac = ac + ("Libro " + (j + 1) + "---> " + "Nombre: " + libro.get(j).getNombre() + " Autor: " + libro.get(j).getAutor() + " Precio: " + libro.get(j).getPrecio() + "€" + " Cant: " + libro.get(j).getUnidades()) + "\n";
             }
+            JOptionPane.showMessageDialog(null, ac);
         } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -232,12 +233,42 @@ public class Libreria {
     }
 
     public void buscar() {
+        String nombreA;
+        String autor = "";
+        String n = "";
         try {
-            sc = new Scanner(new File(nombF));
+            do {
+                int aux = 0;
+                libro = new ArrayList();
+                sc = new Scanner(new File(nombF)).useDelimiter(delim);
+                fich = new PrintWriter(new FileWriter(new File(nombF), true));
+                while (sc.hasNextLine()) {
+                    linea = sc.nextLine();
+                    String[] l = linea.split(",");
+                    for (int i = 0; i < l.length; i += 4) {
+                        libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
+                    }
+                }
+                nombreA = JOptionPane.showInputDialog("Nombre del Autor");
+                for (Libro l : libro) {
+                    if (l.getAutor().equalsIgnoreCase(nombreA)) {
+                        autor = l.getAutor();
+                        n = n + "\n" + l.getNombre();
+                        aux = 1;
+                    }
+                }
+                if (aux == 1) {
+                    JOptionPane.showMessageDialog(null, "Autor: " + autor + "\n" + "Libros: " + n);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existe el autor: " + nombreA + ", en la Base de Datos.");
+                }
+                bucle = JOptionPane.showConfirmDialog(null, "Buscar mas?");
+            } while (bucle == 0);
         } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             sc.close();
+            fich.close();
         }
     }
 }
