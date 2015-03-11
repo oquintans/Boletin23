@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,7 +75,6 @@ public class Libreria {
                         precio = l.getPrecio();
                         n = l.getNombre();
                         aux = 1;
-
                     }
                 }
                 if (aux == 1) {
@@ -144,21 +144,13 @@ public class Libreria {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             fich.close();
-
+            sc.close();
         }
     }
 
     public void modificar() {
-        try {
-            fich = new PrintWriter(new File(nombF));
-        } catch (IOException ex) {
-            Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            fich.close();
-        }
-    }
-
-    public void ordenar() {
+        libro = new ArrayList();
+        int cont;
         try {
             sc = new Scanner(new File(nombF)).useDelimiter(delim);
             fich = new PrintWriter(new FileWriter(new File(nombF), true));
@@ -169,7 +161,68 @@ public class Libreria {
                     libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
                 }
             }
+            sc.close();
+            fich.close();
+            do {
+                cont = 0;
+                String preg = JOptionPane.showInputDialog("Nombre del Libro");
+                for (int i = 0; i < libro.size(); i++) {
+                    if (libro.get(i).getNombre().equalsIgnoreCase(preg)) {
+                        String precio = JOptionPane.showInputDialog("Libro: " + libro.get(i).getNombre() + " Precio: " + libro.get(i).getPrecio() + "€\nIntroducir nuevo precio.");
+                        libro.get(i).setPrecio(Float.parseFloat(precio));
+                        cont = 1;
+                        break;
+                    } else {
+                        cont = 0;
+                    }
+                }
+                if (cont == 1) {
+                    File f = new File(nombF);
+                    f.delete();
+                    f.createNewFile();
+                    fich = new PrintWriter(new FileWriter(new File(nombF), true));
+                    for (int j = 0; j < libro.size(); j++) {
+                        if (libro.get(j).getUnidades() != 0) {
+                            fich.println(libro.get(j));
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No existe el libro: " + preg + ", en la Base de Datos");
+                }
+                bucle = JOptionPane.showConfirmDialog(null, "Buscar mas?");
+            } while (bucle == 0);
+        } catch (IOException ex) {
+            Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            fich.close();
+            sc.close();
+        }
+    }
 
+    public void ordenar() {
+        libro = new ArrayList();
+        try {
+            sc = new Scanner(new File(nombF)).useDelimiter(delim);
+            fich = new PrintWriter(new FileWriter(new File(nombF), true));
+            while (sc.hasNextLine()) {
+                linea = sc.nextLine();
+                String[] l = linea.split(",");
+                for (int i = 0; i < l.length; i += 4) {
+                    libro.add(new Libro(l[i], l[i + 1], Float.parseFloat(l[i + 2]), Integer.parseInt(l[i + 3])));
+                }
+            }
+            Collections.sort(libro);
+            sc.close();
+            fich.close();
+            File f = new File(nombF);
+            f.delete();
+            f.createNewFile();
+            fich = new PrintWriter(new FileWriter(new File(nombF), true));
+            for (int i = 0; i < libro.size(); i++) {
+                if (libro.get(i).getUnidades() != 0) {
+                    fich.println(libro.get(i));
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(Libreria.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

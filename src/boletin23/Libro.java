@@ -4,7 +4,7 @@ package boletin23;
  *
  * @author oquintansocampo
  */
-public class Libro {
+public class Libro implements Comparable {
 
     private String nombre;
     private String autor;
@@ -56,6 +56,18 @@ public class Libro {
     @Override
     public String toString() {
         return nombre + "," + autor + "," + precio + "," + unidades;
+    }
+
+    @Override
+    public int compareTo(Object t) {
+        Libro l = (Libro) t;
+        if (this.nombre.compareToIgnoreCase(l.nombre) == 0) {
+            return 0;
+        } else if (this.nombre.compareToIgnoreCase(l.nombre) > 1) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
 }
